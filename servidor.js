@@ -1,17 +1,20 @@
 import express from 'express';
 const app = express();
 const PORT = 8080;
-import pkg from './productManeger.js';
-const { ProductManager, pruebaDesafio } = pkg;
+import ProductManager from './productManeger.js';
+import pruebaDesafio from './pruebaDesafio.js';
 
 app.get('/', (req, res) => {
     res.send('Bienvenido a mi servidor');
 });
 
+
+
 app.get('/products', (req, res) => {
 
     const productManager = new ProductManager('products.json');
-    pruebaDesafio(productManager);
+    productManager.readFile();
+    // pruebaDesafio(productManager);
     const {limit} = req.query;
     const productosArr = productManager.getProducts();
     if(limit){

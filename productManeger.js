@@ -1,40 +1,29 @@
 import fs from 'fs';
 
 
-export class ProductManager {
-    constructor(filename) {
-      this.filename=filename;
-      this.products = [];
-      this.idCounter = 1;
-    }
+export default class ProductManager {
+  constructor(path) {
+    this.path = path;
+    this.id = 0;
+    this.products = [];
+    this.readFile();
+  }
 
-    //regresa el array de productos
-    getProducts() {
-      return this.products;
+  readFile() {
+    try {
+      this.products = JSON.parse(fs.readFileSync(this.path, 'utf8'));
+      this.id = this.products.length;
+    } catch (err) {
+      console.error(err);
     }
+  }
 
-    readFile() {
-      fs.readFile(this.filename, 'utf-8', (err, data) => {
-        if (err) throw err;
-        this.products = JSON.parse(data);
-        console.log('sent to array')
-      });
-    }
+  writeFile() {
+    fs.writeFileSync(this.path, JSON.stringify(this.products), 'utf8');
+  }
 
-    // funcion para generar id esto es otra manera de hacerlo, yo lo hice metiendo el contador en el constructor
-    generateId() {
-        counter = this,products.length;
-        if (counter ==0) {
-            return 1;
-        } else {
-            return (this.products[count-1].id)+1;
-        }
-    }
-  // funcion para agregar un producto al array
-    addProduct=  (title, description, price, thumbnail, code, stock) => {
-
-     //validar que los datos no esten vacios antes de hacer push al array
-      if(!title||!description||!price||!thumbnail||!code||!stock){
+  addProduct(title, description, price, thumbnail, code, stock) {
+    if(!title||!description||!price||!thumbnail||!code||!stock){
         console.log("Faltan datos para agregar el producto");
         return undefined;
       }
@@ -44,47 +33,52 @@ export class ProductManager {
         console.log("El producto ya existe, no se puede agregar");
         return undefined;
       }
+    const product = {
+      id: ++this.id,
+      title,
+      description,
+      price,
+      thumbnail,
+      code,
+      stock
+    };
 
-      // si cumple con todo lo anterior, hacemos push al array
-      this.products.push({
-        id: this.idCounter,
-        title,
-        description,
-        price,
-        thumbnail,
-        code,
-        stock});
-        
-      this.idCounter++;
-      fs.writeFileSync(this.filename, JSON.stringify(this.products, null, 2))
-    }
+    this.products.push(product);
+    this.writeFile();
 
-    // funcion para buscar un producto por id
-    getProductById(id) {
-      const product = this.products.find(p => p.id === id);
-      if (!product) {
-        console.log("Product not found.");
-        return undefined;
-      }
-      return product;
-    }
+    return product;
   }
- //abajo es el codigo para probar las funciones
-  export  function pruebaDesafio(productManager){
-  // const productManager = new ProductManager('products.json');
-   productManager.addProduct("producto prueba", "Este es un producto prueba", 200, "Sin imagen", "abc123", 25);
-   productManager.addProduct("producto prueba1", "Este es un producto prueba1", 201, "Sin imagen1", "poiwer", 26);
-   productManager.addProduct("producto prueba2", "Este es un producto prueba1", 201, "Sin imagen1", "456453", 26);
-   productManager.addProduct("producto prueba3", "Este es un producto prueba1", 201, "Sin imagen1", "dfgsgh",44 );
-  console.log(productManager.getProducts());
-  // console.log(productManager.getProductById(1));
- }
 
- export default {ProductManager, pruebaDesafio};
+  getProduct(id) {
+    return this.products.find(product => product.id === id);
+  }
 
-//  const productManager = new ProductManager('products.json');
-//  productManager.readFile();
-//  console.log(productManager.getProducts());
+  getProducts(id) {
+    return this.products;
+  }
 
-//  pruebaDesafio();
+  updateProduct(id, product) {
+    const index = this.products.findIndex(p => p.id === id);
+    if (index === -1) return;
+
+    this.products[index] = { ...this.products[index], ...product };
+    this.writeFile();
+
+    return this.products[index];
+  }
+
+  deleteProduct(id) {
+    const index = this.products.findIndex(p => p.id === id);
+    if (index === -1) return;
+
+    const deletedProduct = this.products.splice(index, 1);
+    this.writeFile();
+
+    return deletedProduct[0];
+  }
+}
+
+
+
+
 
