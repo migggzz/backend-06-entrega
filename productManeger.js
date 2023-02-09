@@ -1,7 +1,7 @@
-const fs = require('fs');
+import fs from 'fs';
 
 
-class ProductManager {
+export class ProductManager {
     constructor(filename) {
       this.filename=filename;
       this.products = [];
@@ -11,6 +11,14 @@ class ProductManager {
     //regresa el array de productos
     getProducts() {
       return this.products;
+    }
+
+    readFile() {
+      fs.readFile(this.filename, 'utf-8', (err, data) => {
+        if (err) throw err;
+        this.products = JSON.parse(data);
+        console.log('sent to array')
+      });
     }
 
     // funcion para generar id esto es otra manera de hacerlo, yo lo hice metiendo el contador en el constructor
@@ -23,7 +31,7 @@ class ProductManager {
         }
     }
   // funcion para agregar un producto al array
-    addProduct= async (title, description, price, thumbnail, code, stock) => {
+    addProduct=  (title, description, price, thumbnail, code, stock) => {
 
      //validar que los datos no esten vacios antes de hacer push al array
       if(!title||!description||!price||!thumbnail||!code||!stock){
@@ -62,15 +70,21 @@ class ProductManager {
     }
   }
  //abajo es el codigo para probar las funciones
- async function pruebaDesafio(){
-  const productManager = new ProductManager('products.json');
-  await productManager.addProduct("producto prueba", "Este es un producto prueba", 200, "Sin imagen", "abc123", 25);
-  await productManager.addProduct("producto prueba1", "Este es un producto prueba1", 201, "Sin imagen1", "abc1231", 26);
-  await productManager.addProduct("producto prueba1", "Este es un producto prueba1", 201, "Sin imagen1", "abc1231", 26);
-  await productManager.addProduct("producto prueba1", "Este es un producto prueba1", 201, "Sin imagen1", "abc1231111", );
+  export  function pruebaDesafio(productManager){
+  // const productManager = new ProductManager('products.json');
+   productManager.addProduct("producto prueba", "Este es un producto prueba", 200, "Sin imagen", "abc123", 25);
+   productManager.addProduct("producto prueba1", "Este es un producto prueba1", 201, "Sin imagen1", "poiwer", 26);
+   productManager.addProduct("producto prueba2", "Este es un producto prueba1", 201, "Sin imagen1", "456453", 26);
+   productManager.addProduct("producto prueba3", "Este es un producto prueba1", 201, "Sin imagen1", "dfgsgh",44 );
   console.log(productManager.getProducts());
-  console.log(productManager.getProductById(1));
+  // console.log(productManager.getProductById(1));
  }
 
- pruebaDesafio();
+ export default {ProductManager, pruebaDesafio};
+
+//  const productManager = new ProductManager('products.json');
+//  productManager.readFile();
+//  console.log(productManager.getProducts());
+
+//  pruebaDesafio();
 

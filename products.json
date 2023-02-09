@@ -14,7 +14,25 @@
     "description": "Este es un producto prueba1",
     "price": 201,
     "thumbnail": "Sin imagen1",
-    "code": "abc1231",
+    "code": "poiwer",
     "stock": 26
+  },
+  {
+    "id": 3,
+    "title": "producto prueba2",
+    "description": "Este es un producto prueba1",
+    "price": 201,
+    "thumbnail": "Sin imagen1",
+    "code": "456453",
+    "stock": 26
+  },
+  {
+    "id": 4,
+    "title": "producto prueba3",
+    "description": "Este es un producto prueba1",
+    "price": 201,
+    "thumbnail": "Sin imagen1",
+    "code": "dfgsgh",
+    "stock": 44
   }
 ]
